@@ -31,3 +31,38 @@
     @apply opacity-100;
   }
 }
+
+/* styles.css */
+.fade-in {
+  animation: fadeInUp 1s forwards; /* Adjust duration as needed */
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(1000px); /* Move up from 20px below */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* Final position */
+  }
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
