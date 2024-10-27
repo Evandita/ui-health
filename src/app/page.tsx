@@ -1,5 +1,6 @@
 import AboutSectionOne from "@/components/About/AboutSectionOne";
 import Appointment from "@/components/Appointment";
+import Contact from "@/components/Contact";
 import Hero from "@/components/Hero";
 import Video from "@/components/Video";
 import { Metadata } from "next";
@@ -17,6 +18,7 @@ export default function Home() {
       <Video />
       <AboutSectionOne />
       <Appointment />
+      <Contact />
     </>
   );
 }
