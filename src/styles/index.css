@@ -37,6 +37,20 @@
   animation: fadeInUp 1s forwards; /* Adjust duration as needed */
 }
 
+@keyframes bounceSlow {
+  0%, 100% {
+    transform: translateY(20);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.bounce-slow {
+  animation: bounceSlow 3s infinite;
+}
+
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

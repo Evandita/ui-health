@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import SectionTitle from "../Common/SectionTitle";
+import "tailwindcss/tailwind.css";
 
 const Appointment = () => {
   const [appointmentDate, setAppointmentDate] = useState("");
@@ -27,7 +27,8 @@ const Appointment = () => {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
         const dayOfWeek = date.getUTCDay();
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Exclude Sundays (0) and Saturdays (6)
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+          // Exclude Sundays (0) and Saturdays (6)
           dates.push(date.toISOString().split("T")[0]); // Format: YYYY-MM-DD
         }
       }
@@ -38,19 +39,24 @@ const Appointment = () => {
 
   return (
     <section
-        id="home"
-        className="relative z-10 overflow-hidden bg-cover bg-center bg-white pb-16 pt-[120px] dark:bg-gray-dark md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[100px] 2xl:pt-[100px]"
-        style={{
-          backgroundImage: 'url("/images/klinik-makara-4.jpg")',
-        }}
-      >
+      id="home"
+      className="relative z-10 overflow-hidden bg-cover bg-center bg-white pb-16 pt-[120px] dark:bg-gray-dark md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[100px] 2xl:pt-[100px]"
+      style={{
+        backgroundImage: 'url("/images/klinik-makara-4.jpg")',
+      }}
+    >
       <div className="absolute inset-0 bg-white opacity-80 dark:bg-dark dark:opacity-80 z-10"></div>
       <div className="container relative z-20">
         <div className="flex flex-col items-center lg:flex-row lg:justify-center lg:space-x-20">
           {/* Form for Booking an Appointment */}
-          <div className="max-w-[600px] w-full mb-12 lg:mb-0" data-wow-delay=".15s">
-            <form className="space-y-6 bg-white p-8 rounded-md shadow-lg dark:bg-black">
-              <h3 className="text-2xl text-center font-bold text-black dark:text-white">Online Appointment Form</h3>
+          <div
+            className="max-w-[600px] w-full mb-12 lg:mb-0 transition-transform transform hover:scale-105 duration-300"
+            data-wow-delay=".15s"
+          >
+            <form className="space-y-6 bg-yellow_bright/50 p-8 rounded-md shadow-lg dark:bg-blue/50">
+              <h3 className="text-2xl text-center font-bold text-black dark:text-white">
+                Online Appointment Form
+              </h3>
 
               {/* Row 1: Student Name and Student ID */}
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -59,7 +65,7 @@ const Appointment = () => {
                   <input
                     type="text"
                     title="Enter your full name here"
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow_bright dark:bg-blue dark:border-dark dark:focus:ring-yellow_bright"
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright"
                     placeholder="Enter your name"
                     required
                   />
@@ -69,7 +75,7 @@ const Appointment = () => {
                   <input
                     type="text"
                     title="Enter your student ID here"
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow_bright dark:bg-blue dark:border-dark dark:focus:ring-yellow_bright"
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright"
                     placeholder="Enter your student ID"
                     required
                   />
@@ -84,14 +90,13 @@ const Appointment = () => {
                     value={appointmentDate}
                     onChange={(e) => setAppointmentDate(e.target.value)}
                     title="Select your preferred appointment date"
-                    className="w-full cursor-pointer px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow_bright dark:bg-blue dark:border-dark dark:focus:ring-yellow_bright"
+                    className="w-full cursor-pointer px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright"
                     required
                   >
                     <option value="">Select a date</option>
                     {availableDates.map((date) => (
                       <option key={date} value={date}>
                         {new Date(date).toLocaleDateString("en-US", {
-                          weekday: "long",
                           month: "long",
                           day: "numeric",
                           year: "numeric",
@@ -104,7 +109,7 @@ const Appointment = () => {
                   <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">Appointment Time</label>
                   <select
                     title="Select your preferred appointment time"
-                    className="w-full cursor-pointer px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow_bright dark:bg-blue dark:border-dark dark:focus:ring-yellow_bright"
+                    className="w-full cursor-pointer px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright"
                     required
                   >
                     <option value="">Select a time</option>
@@ -118,7 +123,7 @@ const Appointment = () => {
                 <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">Health Services</label>
                 <select
                   title="Choose the type of health service you need"
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow_bright dark:bg-blue dark:border-dark dark:focus:ring-yellow_bright"
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright"
                   required
                 >
                   <option value="">Select a service</option>
@@ -134,7 +139,7 @@ const Appointment = () => {
                 <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">Description (Optional)</label>
                 <textarea
                   title="Provide any additional information related to your appointment"
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-yellow_bright dark:bg-blue dark:border-dark dark:focus:ring-yellow_bright resize-none"
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright resize-none"
                   placeholder="Provide additional information if needed"
                   rows={4}
                 ></textarea>
@@ -145,7 +150,7 @@ const Appointment = () => {
                 <button
                   type="submit"
                   title="Submit your appointment booking"
-                  className="w-full py-4 text-dark font-semibold bg-yellow_bright rounded-md hover:bg-yellow_bright/50 duration-300 ease-in-out"
+                  className="w-full py-4 text-white dark:text-black font-semibold bg-black dark:bg-yellow_bright rounded-md hover:bg-black/50 dark:hover:bg-yellow_bright/50 duration-300 ease-in-out"
                 >
                   Book Appointment
                 </button>
