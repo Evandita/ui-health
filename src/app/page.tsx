@@ -1,5 +1,5 @@
 import AboutSectionOne from "@/components/About/AboutSectionOne";
-import AboutSectionTwo from "@/components/About/AboutSectionTwo";
+import Appointment from "@/components/Appointment";
 import Hero from "@/components/Hero";
 import Video from "@/components/Video";
 import { Metadata } from "next";
@@ -16,7 +16,7 @@ export default function Home() {
       <Hero />
       <Video />
       <AboutSectionOne />
-      <AboutSectionTwo />
+      <Appointment />
     </>
   );
 }
