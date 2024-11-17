@@ -96,7 +96,7 @@ const Contact = () => {
               </div>
               
               <div className="flex items-center">
-                <FaPhone className="text-gray-300 mr-3" size={24} />
+                <FaPhone className="text-gray-700 dark:text-gray-300 mr-3" size={24} />
                 <span className="text-base font-medium text-body-color dark:text-body-color-dark">
                 021-78888176
                 </span>

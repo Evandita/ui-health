@@ -4,9 +4,17 @@ import { useState, useEffect } from "react";
 import "tailwindcss/tailwind.css";
 
 const Appointment = () => {
+  
+  const [studentName, setStudentName] = useState("");
+  const [studentId, setStudentId] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentTime, setAppointmentTime] = useState("");
+  const [serviceId, setServiceId] = useState("");
+  const [description, setDescription] = useState("");
   const [availableDates, setAvailableDates] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
 
+  
   // Generate time options for every hour from 8:00 a.m. to 4:00 p.m.
   const timeOptions = Array.from({ length: 9 }, (_, i) => {
     const hour = 8 + i;
@@ -37,6 +45,49 @@ const Appointment = () => {
     generateWeekdayDates();
   }, []);
 
+   // Handle form submission
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const appointmentData = {
+      student_id: studentId,
+      service_id: serviceId,
+      description: description,
+      student_name: studentName,
+      appointment_date: appointmentDate,
+      appointment_time: appointmentTime,
+    };
+
+    try {
+      const response = await fetch("/api/appointments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(appointmentData),
+      });
+
+      console.log("test")
+      console.log(appointmentData);
+      console.log(response);
+
+      if (response.ok) {
+        setSuccessMessage("Appointment booked successfully!");
+        // Clear form fields
+        setStudentName("");
+        setStudentId("");
+        setAppointmentDate("");
+        setAppointmentTime("");
+        setServiceId("");
+        setDescription("");
+      } else {
+        console.error("Failed to book appointment.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <section
       id="home"
@@ -53,7 +104,7 @@ const Appointment = () => {
             className="max-w-[600px] w-full mb-12 lg:mb-0 transition-transform transform hover:scale-105 duration-300"
             data-wow-delay=".15s"
           >
-            <form className="space-y-6 bg-yellow_bright/50 p-8 rounded-md shadow-lg dark:bg-blue/50">
+            <form onSubmit={handleSubmit} className="space-y-6 bg-yellow_bright/50 p-8 rounded-md shadow-lg dark:bg-blue/50">
               <h3 className="text-2xl text-center font-bold text-black dark:text-white">
                 Online Appointment Form
               </h3>
@@ -64,6 +115,8 @@ const Appointment = () => {
                   <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">Student Name</label>
                   <input
                     type="text"
+                    value={studentName}
+                    onChange={(e) => setStudentName(e.target.value)}
                     title="Enter your full name here"
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright"
                     placeholder="Enter your name"
@@ -74,6 +127,8 @@ const Appointment = () => {
                   <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">Student ID</label>
                   <input
                     type="text"
+                    value={studentId}
+                    onChange={(e) => setStudentId(e.target.value)}
                     title="Enter your student ID here"
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright"
                     placeholder="Enter your student ID"
@@ -108,6 +163,8 @@ const Appointment = () => {
                 <div>
                   <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">Appointment Time</label>
                   <select
+                    value={appointmentTime}
+                    onChange={(e) => setAppointmentTime(e.target.value)}
                     title="Select your preferred appointment time"
                     className="w-full cursor-pointer px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright"
                     required
@@ -123,14 +180,16 @@ const Appointment = () => {
                 <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">Health Services</label>
                 <select
                   title="Choose the type of health service you need"
+                  value={serviceId}
+                  onChange={(e) => setServiceId(e.target.value)}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright"
                   required
                 >
                   <option value="">Select a service</option>
-                  <option value="general-consultation">General Consultation</option>
-                  <option value="dental-checkup">Dental Checkup</option>
-                  <option value="psychology-counseling">Psychology Counseling</option>
-                  <option value="physical-exam">Physical Examination</option>
+                  <option value="1">General Consultation</option>
+                  <option value="2">Dental Checkup</option>
+                  <option value="3">Psychology Counseling</option>
+                  <option value="4">Physical Examination</option>
                 </select>
               </div>
 
@@ -139,6 +198,8 @@ const Appointment = () => {
                 <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">Description (Optional)</label>
                 <textarea
                   title="Provide any additional information related to your appointment"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                   className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black dark:bg-black dark:border-dark dark:focus:ring-yellow_bright resize-none"
                   placeholder="Provide additional information if needed"
                   rows={4}
@@ -155,6 +216,7 @@ const Appointment = () => {
                   Book Appointment
                 </button>
               </div>
+              {successMessage && <p className="text-green-500 text-center mt-4">{successMessage}</p>}
             </form>
           </div>
 
