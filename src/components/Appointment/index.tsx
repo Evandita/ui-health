@@ -29,28 +29,29 @@ const Appointment = async () => {
 
   const handleSubmit = async (formData: FormData) => {
     "use server";
-
+  
     let student_id = formData.get("studentId");
     let service_id = formData.get("serviceId");
     let description = formData.get("description");
     let student_name = formData.get("studentName");
     let appointment_date = formData.get("appointmentDate");
     let appointment_time = formData.get("appointmentTime");
-
-    // Send data to your database or API
+  
     try {
       const res = await pool.query(
         'INSERT INTO appointment (student_id, service_id, description, student_name, appointment_date, appointment_time) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
         [student_id, service_id, description, student_name, appointment_date, appointment_time]
-      )
-
+      );
+  
       console.log("Appointment booked:", res);
+  
+      // Redirect to the success page upon successful submission
+      redirect("/appointment-success");
     } catch (error) {
       console.error("Error booking appointment:", error);
       throw error;
     }
-    redirect("/appointment");
-  };
+  };  
 
   return (
     <section
