@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation"
+import pool from "@/utils/postgres";
 import Link from "next/link";
 
 import { Metadata } from "next";
@@ -5,10 +7,33 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Sign In Page",
   description: "",
-  // other metadata
 };
 
+
 const SigninPage = () => {
+  const handleSubmit = async (formData: FormData) => {
+    "use server";
+  
+    let admin_email = formData.get("email");
+    let admin_password = formData.get("password");
+  
+    try {
+      const res = await pool.query(
+        'SELECT * FROM admin WHERE admin_email = $1 AND admin_password = $2',
+        [admin_email, admin_password]
+      );
+  
+      if (res.rows.length > 0) {
+        console.log("Successfully Logged In:", res.rows[0]);
+        redirect("/"); 
+      } else {
+        console.error("Login Failed: Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Error occurred during login:", error);
+    }
+  };
+  
   return (
     <>
       <section className="relative z-10 overflow-hidden pb-16 pt-36 md:pb-20 lg:pb-28 lg:pt-[180px]">
@@ -23,7 +48,9 @@ const SigninPage = () => {
                   Log In to your account to have more access in Klinik Satelit UI web
                 </p>
                 
-                <form>
+                <form
+                  action={handleSubmit}
+                >
                   <div className="mb-8">
                     <label
                       htmlFor="email"
@@ -61,12 +88,7 @@ const SigninPage = () => {
                     </button>
                   </div>
                 </form>
-                <p className="text-center text-base font-medium text-body-color">
-                  Don’t have an account?{" "}
-                  <Link href="/signup" className="text-primary hover:underline">
-                    Sign up
-                  </Link>
-                </p>
+                
               </div>
             </div>
           </div>
