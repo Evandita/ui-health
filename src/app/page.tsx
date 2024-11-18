@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   // other metadata
 };
 
-const fetchDataFromDB = async() => {
+const fetchAdminDataFromDB = async() => {
   try {
     const client = await pool.connect();
     console.log("Connected to the database!");
@@ -30,8 +30,54 @@ const fetchDataFromDB = async() => {
   }
 }
 
+const fetchDoctorDataFromDB = async() => {
+  try {
+    const client = await pool.connect();
+    console.log("Connected to the database!");
+
+    const result = await client.query("SELECT * FROM doctor");
+    const data = result.rows;
+    console.log("Fetched data: ", data);
+
+    client.release();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    throw error;
+  }
+}
+
+const fetchHealthServiceDataFromDB = async() => {
+  try {
+    const client = await pool.connect();
+    console.log("Connected to the database!");
+
+    const result = await client.query("SELECT * FROM healthservice");
+    const data = result.rows;
+    console.log("Fetched data: ", data);
+
+    client.release();
+    return data;
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    throw error;
+  }
+}
+
 export default function Home() {
-  fetchDataFromDB().then(data => {
+  fetchAdminDataFromDB().then(data => {
+    console.log("Received data: ", data);
+  }).catch( error => {
+    console.error("Error fetching data: ", error);
+  })
+
+  fetchDoctorDataFromDB().then(data => {
+    console.log("Received data: ", data);
+  }).catch( error => {
+    console.error("Error fetching data: ", error);
+  })
+
+  fetchHealthServiceDataFromDB().then(data => {
     console.log("Received data: ", data);
   }).catch( error => {
     console.error("Error fetching data: ", error);

@@ -43,5 +43,19 @@ const blogData: Blog[] = [
     tags: ["Motivation"],
     publishDate: "2024",
   },
+  {
+    id: 4,
+    title: "Resolusi Tahun Baru",
+    paragraph:
+      "Ketika memasuki tahun baru, kita sering sekali mendengar istilah “resolusi tahun baru”, tapi apa sih sebenarnya yang dimaksud resolusi? Sudahkah kita memahaminya dengan baik dan benar? Yuk kita bahas!",
+    image: "/images/blog4.png",
+    author: {
+      name: "konselingmakaraui",
+      image: "/favicon.ico",
+      designation: "Content Writer",
+    },
+    tags: ["Motivation"],
+    publishDate: "2024",
+  }
 ];
 export default blogData;

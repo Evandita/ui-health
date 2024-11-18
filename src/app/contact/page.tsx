@@ -10,10 +10,11 @@ export const metadata: Metadata = {
 };
 
 const ContactPage = () => {
+
   return (
     <>
       <Breadcrumb
-        pageName="UI Health Support"
+        pageName="Support"
         description="Any confusion and need additional help? Feel free to reach us now!"
       />
 

@@ -15,7 +15,7 @@ const Blog = () => {
   return (
     <>
       <Breadcrumb
-        pageName="UI Health Blogs"
+        pageName="Blogs"
         description="Take a look at Educational Health Blogs provided by Klinik Satelit UI"
       />
 

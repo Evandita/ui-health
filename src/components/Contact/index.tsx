@@ -1,7 +1,31 @@
+import { redirect } from "next/navigation"
+import pool from "@/utils/postgres";
 import NewsLatterBox from "./NewsLatterBox";
 import { FaWhatsapp, FaPhone } from "react-icons/fa"; // Importing icons from react-icons as placeholders
 
 const Contact = () => {
+
+  const handleSubmit = async (formData: FormData) => {
+    "use server";
+
+    let student_name = formData.get("studentName");
+    let student_email = formData.get("studentEmail");
+    let student_message = formData.get("studentMessage");
+
+    try {
+      const res = await pool.query(
+        'INSERT INTO ticket (student_name, student_email, student_message) VALUES ($1, $2, $3) RETURNING *',
+        [student_name, student_email, student_message]
+      )
+
+      console.log("Ticket sent:", res);
+    } catch (error) {
+      console.error("Error sending ticket:", error);
+      throw error;
+    }
+    redirect("/contact");
+  };
+
   return (
     <section id="contact" className="relative overflow-hidden py-16 md:py-20 lg:py-28">
       {/* SVG Background */}
@@ -20,7 +44,9 @@ const Contact = () => {
               <p className="mb-12 text-base font-medium text-body-color">
                 Our support team will get back to you ASAP via email.
               </p>
-              <form>
+              <form
+                action={handleSubmit}
+              >
                 <div className="-mx-4 flex flex-wrap">
                   <div className="w-full px-4 md:w-1/2">
                     <div className="mb-8">
@@ -31,6 +57,7 @@ const Contact = () => {
                         Your Name
                       </label>
                       <input
+                        name="studentName"
                         type="text"
                         placeholder="Enter your name"
                         className="border-stroke w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:ring-yellow_bright focus:ring-2 dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark "
@@ -47,6 +74,7 @@ const Contact = () => {
                         Your Email
                       </label>
                       <input
+                        name="studentEmail"
                         type="email"
                         placeholder="Enter your email"
                         className="border-stroke w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:ring-yellow_bright focus:ring-2 dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark"
@@ -63,7 +91,7 @@ const Contact = () => {
                         Your Message
                       </label>
                       <textarea
-                        name="message"
+                        name="studentMessage"
                         rows={5}
                         placeholder="Enter your Message"
                         className="border-stroke w-full resize-none rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:ring-yellow_bright focus:ring-2 dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark "
@@ -72,7 +100,9 @@ const Contact = () => {
                     </div>
                   </div>
                   <div className="w-full px-4">
-                    <button className="font-semibold rounded-sm bg-yellow_bright px-9 py-4 text-base font-medium text-black shadow-submit duration-300 hover:bg-yellow_bright/50 dark:shadow-submit-dark">
+                    <button 
+                    type = "submit"
+                    className="font-semibold rounded-sm bg-yellow_bright px-9 py-4 text-base font-medium text-black shadow-submit duration-300 hover:bg-yellow_bright/50 dark:shadow-submit-dark">
                       Submit Ticket
                     </button>
                   </div>

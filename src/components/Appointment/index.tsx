@@ -40,11 +40,11 @@ const Appointment = async () => {
     // Send data to your database or API
     try {
       const res = await pool.query(
-        'INSERT INTO appointment (student_id, service_id, description, student_name, appointment_date, appointment_time) VALUES ($1, $2, $3, $4, $5, $6)',
+        'INSERT INTO appointment (student_id, service_id, description, student_name, appointment_date, appointment_time) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
         [student_id, service_id, description, student_name, appointment_date, appointment_time]
       )
 
-      console.log("Appointment booked:", res.rows[0]);
+      console.log("Appointment booked:", res);
     } catch (error) {
       console.error("Error booking appointment:", error);
       throw error;
@@ -150,10 +150,19 @@ const Appointment = async () => {
                   required
                 >
                   <option value="">Select a service</option>
-                  <option value="1">General Consultation</option>
-                  <option value="2">Dental Checkup</option>
-                  <option value="3">Psychology Counseling</option>
-                  <option value="4">Physical Examination</option>
+                  <option value="1">General and family medicine clinic</option>
+                  <option value="2">General dental clinic</option>
+                  <option value="3">Pulmonary clinic</option>
+                  <option value="4">Maternal and child health clinic</option>
+                  <option value="5">Counseling</option>
+                  <option value="6">Pharmacy</option>
+                  <option value="7">Emergency Treatment (minor)</option>
+                  <option value="8">Laboratory</option>
+                  <option value="9">Ambulance</option>
+                  <option value="10">Body Mass Index Analysis</option>
+                  <option value="11">Electrocardiography</option>
+                  <option value="12">Pregnancy ultrasound</option>
+                  <option value="13">Education, training, and research services</option>
                 </select>
               </div>
 
