@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation"
 import pool from "@/utils/postgres";
-import Link from "next/link";
-
+import { cookies } from "next/headers";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,37 +9,77 @@ export const metadata: Metadata = {
 };
 
 
-const SigninPage = () => {
+const SigninPage = ({ searchParams }: { searchParams?: { alert?: string; error?: string } }) => {
+
+  const alertMessage = searchParams?.alert || null;
+  const errorMessage = searchParams?.error || null;
+
   const handleSubmit = async (formData: FormData) => {
     "use server";
   
-    let admin_email = formData.get("email");
-    let admin_password = formData.get("password");
+    let account_email = formData.get("email");
+    let account_password = formData.get("password");
+
+    let err_msg = ""
   
     try {
       const res = await pool.query(
-        'SELECT * FROM admin WHERE admin_email = $1 AND admin_password = $2',
-        [admin_email, admin_password]
+        'SELECT * FROM ACCOUNT WHERE account_email = $1 AND account_password = $2',
+        [account_email, account_password]
       );
   
       if (res.rows.length > 0) {
         console.log("Successfully Logged In:", res.rows[0]);
-        redirect("/"); 
+        
+        // Generate a cookie for the session
+        const userCookie = {
+          id: res.rows[0].account_id,
+          name: res.rows[0].account_name,
+          email: res.rows[0].account_email,
+          isAdmin: res.rows[0].account_isadmin
+        };
+
+        cookies().set("user", JSON.stringify(userCookie), {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          path: "/",
+          maxAge: 60 * 60 * 24, // Cookie valid for 24 hours
+        });
+
       } else {
-        console.error("Login Failed: Invalid credentials");
+        err_msg = "Login Failed: Invalid credentials"
+        console.error(err_msg);
+        redirect(`/signin?error=${encodeURIComponent(err_msg)}`);
       }
     } catch (error) {
-      console.error("Error occurred during login:", error);
+      console.error("Error occurred during login:", err_msg);
+      redirect(`/signin?error=${encodeURIComponent(err_msg)}`);
     }
+    redirect("/"); 
   };
   
   return (
     <>
       <section className="relative z-10 overflow-hidden pb-16 pt-36 md:pb-20 lg:pb-28 lg:pt-[180px]">
+      <div className="absolute bottom-0 left-0 right-0 z-[-1] h-full w-full bg-[url('/images/account/shape.svg')] dark:bg-[url('/images/account/shape-dark.svg')] bg-cover bg-center bg-no-repeat"></div>
         <div className="container">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
               <div className="shadow-three mx-auto max-w-[500px] rounded bg-yellow_bright/50 px-6 py-10 dark:bg-blue/50 sm:p-[60px]">
+                {/* Display Alert Message */}
+                {alertMessage && (
+                  <div className="mb-6 text-green-600 text-center font-medium">
+                    {alertMessage}
+                  </div>
+                )}
+
+                {/* Error message */}
+                {errorMessage && (
+                  <div className="mb-6 text-red-600 text-center font-medium">
+                    {errorMessage}
+                  </div>
+                )}
+                
                 <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
                   Sign in to your account
                 </h3>
@@ -92,63 +131,6 @@ const SigninPage = () => {
               </div>
             </div>
           </div>
-        </div>
-        <div className="absolute left-0 top-0 z-[-1]">
-          <svg
-            width="1440"
-            height="969"
-            viewBox="0 0 1440 969"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <mask
-              id="mask0_95:1005"
-              style={{ maskType: "alpha" }}
-              maskUnits="userSpaceOnUse"
-              x="0"
-              y="0"
-              width="1440"
-              height="969"
-            >
-              <rect width="1440" height="969" fill="#090E34" />
-            </mask>
-            <g mask="url(#mask0_95:1005)">
-              <path
-                opacity="0.1"
-                d="M1086.96 297.978L632.959 554.978L935.625 535.926L1086.96 297.978Z"
-                fill="url(#paint0_linear_95:1005)"
-              />
-              <path
-                opacity="0.1"
-                d="M1324.5 755.5L1450 687V886.5L1324.5 967.5L-10 288L1324.5 755.5Z"
-                fill="url(#paint1_linear_95:1005)"
-              />
-            </g>
-            <defs>
-              <linearGradient
-                id="paint0_linear_95:1005"
-                x1="1178.4"
-                y1="151.853"
-                x2="780.959"
-                y2="453.581"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" />
-                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient
-                id="paint1_linear_95:1005"
-                x1="160.5"
-                y1="220"
-                x2="1099.45"
-                y2="1192.04"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#4A6CF7" />
-                <stop offset="1" stopColor="#4A6CF7" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-          </svg>
         </div>
       </section>
     </>

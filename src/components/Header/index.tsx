@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import ThemeToggler from "./ThemeToggler";
 import menuData from "./menuData";
 
-const Header = () => {
+const Header = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+
   // Navbar toggle
   const [navbarOpen, setNavbarOpen] = useState(false);
+
   const navbarToggleHandler = () => {
     setNavbarOpen(!navbarOpen);
   };
@@ -36,7 +38,7 @@ const Header = () => {
   };
 
   const usePathName = usePathname();
-
+  
   return (
     <>
       <header
@@ -145,14 +147,39 @@ const Header = () => {
                   </ul>
                 </nav>
               </div>
+              {/* Conditional rendering for buttons */}
               <div className="flex items-center justify-end pr-16 lg:pr-0">
-                
-                <Link
-                  href="/signin"
-                  className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
-                >
-                  Sign In
-                </Link>
+                {isLoggedIn ? (
+                <>
+                  <a
+                    href="/logout"
+                    className="hidden px-7 py-3 text-base font-medium text-dark hover:text-yellow_dark dark:text-white/70 dark:hover:text-yellow_bright md:block"
+                  >
+                    Logout
+                  </a>
+                  <Link
+                      href="/signup"
+                      className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
+                    >
+                      Profile
+                  </Link>
+                </>
+                ) : (
+                  <>
+                    <Link
+                      href="/signin"
+                      className="hidden px-7 py-3 text-base font-medium text-dark hover:text-yellow_dark dark:text-white/70 dark:hover:text-yellow_bright md:block"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
                 <div>
                   <ThemeToggler />
                 </div>

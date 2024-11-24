@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation"
 import AboutSectionOne from "@/components/About/AboutSectionOne";
 import Appointment from "@/components/Appointment";
 import Blog from "@/components/Blog";
@@ -64,24 +66,7 @@ const fetchHealthServiceDataFromDB = async() => {
   }
 }
 
-export default function Home() {
-  fetchAdminDataFromDB().then(data => {
-    console.log("Received data: ", data);
-  }).catch( error => {
-    console.error("Error fetching data: ", error);
-  })
-
-  fetchDoctorDataFromDB().then(data => {
-    console.log("Received data: ", data);
-  }).catch( error => {
-    console.error("Error fetching data: ", error);
-  })
-
-  fetchHealthServiceDataFromDB().then(data => {
-    console.log("Received data: ", data);
-  }).catch( error => {
-    console.error("Error fetching data: ", error);
-  })
+const Home = async () => {  
   return (
     <>
       <Hero />
@@ -93,3 +78,5 @@ export default function Home() {
     </>
   );
 }
+
+export default Home;
