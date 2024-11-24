@@ -36,6 +36,7 @@ const SigninPage = ({ searchParams }: { searchParams?: { alert?: string; error?:
           id: res.rows[0].account_id,
           name: res.rows[0].account_name,
           email: res.rows[0].account_email,
+          password: res.rows[0].account_password,
           isAdmin: res.rows[0].account_isadmin
         };
 

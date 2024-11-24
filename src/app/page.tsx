@@ -1,5 +1,3 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation"
 import AboutSectionOne from "@/components/About/AboutSectionOne";
 import Appointment from "@/components/Appointment";
 import Blog from "@/components/Blog";

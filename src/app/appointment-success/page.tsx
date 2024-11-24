@@ -15,7 +15,7 @@ export default function AppointmentSuccess() {
         {/* Back to Home Button */}
         <Link
           href="/"
-          className="inline-block bg-yellow_bright text-dark hover:bg-primary-light dark:bg-white dark:hover:bg-accent-dark/80 dark:text-dark font-semibold py-3 px-6 rounded-md transition duration-300 ease-in-out"
+          className="inline-block bg-yellow_bright text-dark hover:bg-yellow_bright/50 dark:text-dark font-semibold py-3 px-6 rounded-md transition duration-300 ease-in-out"
         >
           Back to Home
         </Link>

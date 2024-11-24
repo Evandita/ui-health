@@ -158,7 +158,7 @@ const Header = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                     Logout
                   </a>
                   <Link
-                      href="/signup"
+                      href="/profile"
                       className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
                     >
                       Profile

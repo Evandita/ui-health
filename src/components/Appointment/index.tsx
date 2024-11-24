@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation"
+import Link from "next/link";
 import pool from "@/utils/postgres";
 import "tailwindcss/tailwind.css";
 
@@ -27,6 +29,23 @@ export const timeOptions = Array.from({ length: 9 }, (_, i) => {
 const Appointment = async () => {
   const availableDates = generateWeekdayDates();
 
+  const cookieStore = cookies();
+  const userCookie = cookieStore.get("user");
+
+  let userData = null;
+  if (userCookie) {
+    try {
+      userData = JSON.parse(userCookie.value); // Parse the JSON string from the cookie value
+    } catch (error) {
+      console.error("Error parsing user cookie:", error);
+    }
+  }
+  else {
+    userData = {
+      id: 0
+    }
+  }
+
   const handleSubmit = async (formData: FormData) => {
     "use server";
   
@@ -39,12 +58,12 @@ const Appointment = async () => {
   
     try {
       const res = await pool.query(
-        'INSERT INTO appointment (student_id, service_id, description, student_name, appointment_date, appointment_time) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        [student_id, service_id, description, student_name, appointment_date, appointment_time]
+        'INSERT INTO appointment (student_id, service_id, description, student_name, appointment_date, appointment_time, account_id, status, bill) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+        [student_id, service_id, description, student_name, appointment_date, appointment_time, userData.id, "Pending Approval", "-"]
       );
   
       console.log("Appointment booked:", res);
-  
+
       // Redirect to the success page upon successful submission
       redirect("/appointment-success");
     } catch (error) {
@@ -54,6 +73,7 @@ const Appointment = async () => {
   };  
 
   return (
+    <>
     <section
       id="home"
       className="relative z-10 overflow-hidden bg-cover bg-center bg-white pb-16 pt-[120px] dark:bg-gray-dark md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[100px] 2xl:pt-[100px]"
@@ -61,6 +81,30 @@ const Appointment = async () => {
         backgroundImage: 'url("/images/klinik-makara-4.jpg")',
       }}
     >
+      {!userCookie && (
+        <div className="absolute inset-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-md flex justify-center items-center">
+          <div className="text-center p-8">
+            <h3 className="text-2xl font-bold text-black dark:text-white mb-10">
+              Please Log In to book an appointment
+            </h3>
+            <div className="mt-6 flex space-x-4 justify-center">
+              <Link
+                href="/signin"
+                className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm text-white dark:text-dark bg-dark dark:bg-white px-8 py-3 text-base font-medium transition duration-300 hover:bg-dark/50 dark:hover:bg-white/50 md:block md:px-9 lg:px-6 xl:px-9"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/signup"
+                className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
+              >
+                Sign Up
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="absolute inset-0 bg-white opacity-80 dark:bg-dark dark:opacity-80 z-10"></div>
       <div className="container relative z-20">
         <div className="flex flex-col items-center lg:flex-row lg:justify-center lg:space-x-20">
@@ -204,6 +248,7 @@ const Appointment = async () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 
