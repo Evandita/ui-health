@@ -209,7 +209,7 @@ const BlogDetailsPage = () => {
                   </p>
 
                   <p className="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-                  Onie, S., Usman, Y., Widyastuti, R., Lusiana, M., Angkasawati, T. J., Musadad, D. A., Nilam, J., Vina, A., Kamsurya, R., Batterham, P., Arya, V., Pirkis, J., & Larsen, M. (2024). Indonesia's first suicide statistics profile: an analysis of suicide and attempt rates, underreporting, geographic distribution, gender, method, and rurality. The Lancet regional health. Southeast Asia, 22, 100368. https://doi.org/10.1016/j.lansea.2024.100368
+                  Onie, S., Usman, Y., Widyastuti, R., Lusiana, M., Angkasawati, T. J., Musadad, D. A., Nilam, J., Vina, A., Kamsurya, R., Batterham, P., Arya, V., Pirkis, J., & Larsen, M. (2024). Indonesia&apos;s first suicide statistics profile: an analysis of suicide and attempt rates, underreporting, geographic distribution, gender, method, and rurality. The Lancet regional health. Southeast Asia, 22, 100368. https://doi.org/10.1016/j.lansea.2024.100368
                   </p>
 
                   <p className="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">

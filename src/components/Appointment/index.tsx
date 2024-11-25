@@ -239,8 +239,8 @@ const Appointment = async () => {
             <p className="text-lg text-gray-700 dark:text-gray-300">
               Book an online health appointment with Klinik Satelit UI to get a comprehensive health checkup with
               professionals by filling in the form now. Our experienced medical staff is ready to assist you with
-              personalized care, addressing all your health concerns. Whether it's a routine checkup or a specific
-              issue, we offer a wide range of services tailored to meet your needs. Don't wait—ensure your well-being
+              personalized care, addressing all your health concerns. Whether it&apos;s a routine checkup or a specific
+              issue, we offer a wide range of services tailored to meet your needs. Don&apos;t wait—ensure your well-being
               by scheduling your appointment today, and take the first step towards a healthier tomorrow with ease and
               convenience.
             </p>

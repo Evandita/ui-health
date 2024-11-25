@@ -18,7 +18,7 @@ const Footer = () => {
                   </Link>
                 </div>
                 <p className="mb-9 text-base leading-relaxed text-body-color dark:text-body-color-dark">
-                  Don't forget to follow our official accounts
+                  Don&apos;t forget to follow our official accounts
                   to keep with news and updates!
                 </p>
                 <div className="flex items-center">
