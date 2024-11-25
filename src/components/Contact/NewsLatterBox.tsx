@@ -19,7 +19,7 @@ const NewsLatterBox = () => {
       console.error("Error subscribing notification:", error);
       throw error;
     }
-    redirect("/contact");
+    redirect("/notification-success");
   };
 
   return (

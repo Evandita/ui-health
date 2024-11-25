@@ -23,7 +23,7 @@ const Contact = () => {
       console.error("Error sending ticket:", error);
       throw error;
     }
-    redirect("/contact");
+    redirect("/contact-success");
   };
 
   return (
