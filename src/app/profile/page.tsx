@@ -12,10 +12,26 @@ export const metadata: Metadata = {
 
 let userData = null;
 
+const fetchAllAppointments = async() => {
+  try {
+
+    const result = await pool.query(`SELECT * FROM appointment WHERE status != $1 AND status != $2`,
+      ['Declined', 'Approved']
+    );
+    const data = result.rows;
+    //console.log("Fetched data: ", data);
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    throw error;
+  }
+}
+
 const fetchAppointments = async() => {
   try {
 
-    const result = await pool.query(`SELECT * FROM appointment WHERE account_id = $1`,
+    const result = await pool.query(`SELECT * FROM appointment WHERE account_id = $1 ORDER BY appointment_id DESC`,
       [userData.id]
     );
     const data = result.rows;
@@ -41,6 +57,44 @@ const deleteAppointmentById = async(id) => {
 
   } catch (error) {
     console.error("Error Deleting data: ", error);
+    throw error;
+  }
+
+  redirect("/profile")
+}
+
+const cancelAppointmentById = async(id) => {
+  "use server"
+
+  try {
+
+    const result = await pool.query(`UPDATE appointment SET status = $1 WHERE appointment_id = $2 RETURNING *`,
+      ['Declined', id]
+    );
+    const data = result.rows;
+    console.log("Updated data: ", data);
+
+  } catch (error) {
+    console.error("Error Updating data: ", error);
+    throw error;
+  }
+
+  redirect("/profile")
+}
+
+const approveAppointmentById = async(id) => {
+  "use server"
+
+  try {
+
+    const result = await pool.query(`UPDATE appointment SET status = $1 WHERE appointment_id = $2 RETURNING *`,
+      ['Approved', id]
+    );
+    const data = result.rows;
+    console.log("Updated data: ", data);
+
+  } catch (error) {
+    console.error("Error Updating data: ", error);
     throw error;
   }
 
@@ -122,7 +176,16 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
     redirect(`/profile?alert=${encodeURIComponent("Account succesfully updated")}`)
   };
 
-  const appointments = await fetchAppointments();
+  let appointments = null;
+
+  if (userData.isAdmin == true) {
+    appointments = await fetchAllAppointments();
+  }
+  else {
+    appointments = await fetchAppointments();
+  }
+
+  
   const healthServices = await fetchHealthServices();
 
   function getHealthServiceNameById(id) {
@@ -228,7 +291,9 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
           </div>
         </div>
 
-        {/* User's Online Appointment History*/ }
+        {userData.isAdmin == false ? (
+
+          /* User's Online Appointment History*/ 
 
         <div className="container mt-20">
           <div className="-mx-4 flex flex-wrap">
@@ -277,15 +342,21 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
                             <span style={{ width: "150px", fontWeight: "bold" }}>Description</span>
                             <span>: {appointment.description}</span>
                           </div>
-                          <div style={{ display: "flex" }}>
+                          <div style={{display: "flex"}}
+                          className={`${
+                            appointment.status === "Declined"
+                              ? "text-red-500"
+                              : appointment.status === "Approved"
+                              ? "text-green-500"
+                              : "text-black dark:text-white"
+                          }`}
+                          >
                             <span style={{ width: "150px", fontWeight: "bold" }}>Status</span>
                             <span>: {appointment.status}</span>
                           </div>
-                          <div style={{ display: "flex" }}>
-                            <span style={{ width: "150px", fontWeight: "bold" }}>Bill</span>
-                            <span>: {appointment.bill}</span>
-                          </div>
-                          <form action={async () => {
+
+                          {appointment.status == "Pending Approval" ?
+                          (<form action={async () => {
                             "use server";
                             await deleteAppointmentById(appointment.appointment_id)}}>
                             <button
@@ -294,7 +365,9 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
                             >
                               Cancel Appointment
                             </button>
-                          </form>                          
+                          </form> ) : (<></>)
+                          }
+                                                   
                         </div>
                       </li>
                     ))}
@@ -304,6 +377,106 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
             </div>
           </div>
         </div>
+        ) : (
+          <div className="container mt-20">
+          <div className="-mx-4 flex flex-wrap">
+            <div className="w-full px-4">
+              <div className="shadow-three mx-auto max-w-[700px] rounded bg-yellow_bright/50 px-6 py-10 dark:bg-blue/50 sm:p-[60px]">
+                <h3 className="mb-10 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
+                  Pending Appointment
+                </h3>
+
+                {appointments.length === 0 ? (
+                  <p className="text-center text-gray-600 dark:text-gray-300">
+                    No pending appointment available.
+                  </p>
+                ) : (
+                  <ul className="space-y-4">
+                    {appointments.map((appointment, index) => (
+                      <li
+                        key={index}
+                        className="p-4 border rounded-lg bg-white shadow-md dark:bg-black dark:border-dark mb-10"
+                      >
+                        <h4 className="font-bold text-lg text-black dark:text-white mb-5">
+                          Appointment #{appointment.appointment_id}
+                        </h4>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Name</span>
+                            <span>: {appointment.student_name}</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Student Id</span>
+                            <span>: {appointment.student_id}</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Health Service</span>
+                            <span>: {getHealthServiceNameById(appointment.service_id)}</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Date</span>
+                            <span>: {new Date(appointment.appointment_date).toLocaleDateString()}</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Time</span>
+                            <span>: {appointment.appointment_time}</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Description</span>
+                            <span>: {appointment.description}</span>
+                          </div>
+                          <div style={{display: "flex"}}
+                          className={`${
+                            appointment.status === "Declined"
+                              ? "text-red-500"
+                              : appointment.status === "Approved"
+                              ? "text-green-500"
+                              : "text-black dark:text-white"
+                          }`}
+                          >
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Status</span>
+                            <span>: {appointment.status}</span>
+                          </div>
+
+                          <div className="flex space-x-4">
+                            <form
+                              action={async () => {
+                                "use server";
+                                await cancelAppointmentById(appointment.appointment_id);
+                              }}
+                            >
+                              <button
+                                type="submit"
+                                className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-500/50"
+                              >
+                                Decline
+                              </button>
+                            </form>
+                            <form
+                              action={async () => {
+                                "use server";
+                                await approveAppointmentById(appointment.appointment_id);
+                              }}
+                            >
+                              <button
+                                type="submit"
+                                className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-500/50"
+                              >
+                                Approve
+                              </button>
+                            </form>
+                          </div>
+                          
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        )}
 
       </section>
 
