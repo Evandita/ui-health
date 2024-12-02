@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation"
+import emailjs from 'emailjs-com';
 import pool from "@/utils/postgres";
 
 const NewsLatterBox = () => {
@@ -13,7 +14,7 @@ const NewsLatterBox = () => {
         'INSERT INTO notification (student_name, student_email) VALUES ($1, $2) RETURNING *',
         [student_name, student_email]
       )
-
+      
       console.log("Notification Subscribed:", res);
     } catch (error) {
       console.error("Error subscribing notification:", error);

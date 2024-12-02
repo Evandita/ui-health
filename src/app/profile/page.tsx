@@ -12,6 +12,98 @@ export const metadata: Metadata = {
 
 let userData = null;
 
+export const getTodayDate = () => {
+  const today = new Date();
+  return today.toISOString().split('T')[0]; // Formats as YYYY-MM-DD
+};
+
+const deleteNotificationByEmail = async(student_email) => {
+  "use server"
+
+  try {
+
+    const result = await pool.query(`DELETE FROM notification WHERE student_email = $1 RETURNING *`,
+      [student_email]
+    );
+    const data = result.rows;
+    console.log("Deleted data: ", data);
+
+  } catch (error) {
+    console.error("Error Deleting data: ", error);
+    throw error;
+  }
+
+  redirect("/profile")
+}
+
+const fetchAllNotifications = async() => {
+  try {
+
+    const result = await pool.query(`SELECT DISTINCT ON (student_email)  notification_id, student_name, student_email FROM notification`,
+      []
+    );
+    const data = result.rows;
+    //console.log("Fetched data: ", data);
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    throw error;
+  }
+}
+
+const deleteMessageById = async(id) => {
+  "use server"
+
+  try {
+
+    const result = await pool.query(`DELETE FROM ticket WHERE ticket_id = $1 RETURNING *`,
+      [id]
+    );
+    const data = result.rows;
+    console.log("Deleted data: ", data);
+
+  } catch (error) {
+    console.error("Error Deleting data: ", error);
+    throw error;
+  }
+
+  redirect("/profile")
+}
+
+
+const fetchAllMessages = async() => {
+  try {
+
+    const result = await pool.query(`SELECT * FROM ticket`,
+      []
+    );
+    const data = result.rows;
+    //console.log("Fetched data: ", data);
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    throw error;
+  }
+}
+
+const fetchUpcomingAppointments = async() => {
+  try {
+
+    const result = await pool.query(`SELECT * FROM appointment WHERE status = $1 AND appointment_date >= $2 ORDER BY appointment_date ASC, appointment_time ASC`,
+      ['Approved', getTodayDate()]
+    );
+    const data = result.rows;
+    //console.log("Fetched data: ", data);
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    throw error;
+  }
+}
+
 const fetchAllAppointments = async() => {
   try {
 
@@ -177,6 +269,9 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
   };
 
   let appointments = null;
+  let upcomingAppointments = await fetchUpcomingAppointments();
+  let messages = await fetchAllMessages();
+  let notifications = await fetchAllNotifications();
 
   if (userData.isAdmin == true) {
     appointments = await fetchAllAppointments();
@@ -378,6 +473,7 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
           </div>
         </div>
         ) : (
+          <>
           <div className="container mt-20">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
@@ -391,6 +487,7 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
                     No pending appointment available.
                   </p>
                 ) : (
+                  
                   <ul className="space-y-4">
                     {appointments.map((appointment, index) => (
                       <li
@@ -476,6 +573,173 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
             </div>
           </div>
         </div>
+
+        
+        
+
+
+        <div className="container mt-20">
+          <div className="-mx-4 flex flex-wrap">
+            <div className="w-full px-4">
+              <div className="shadow-three mx-auto max-w-[700px] rounded bg-yellow_bright/50 px-6 py-10 dark:bg-blue/50 sm:p-[60px]">
+                <h3 className="mb-10 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
+                  Upcoming Appointment
+                </h3>
+
+                {appointments.length === 0 ? (
+                  <p className="text-center text-gray-600 dark:text-gray-300">
+                    No upcoming appointment available.
+                  </p>
+                ) : (
+                  
+                  <ul className="space-y-4">
+                    {upcomingAppointments.map((appointment, index) => (
+                      <li
+                        key={index}
+                        className="p-4 border rounded-lg bg-white shadow-md dark:bg-black dark:border-dark mb-5"
+                      >
+                        <h4 className="font-bold text-lg text-black dark:text-white mb-5">
+                          Appointment #{appointment.appointment_id}
+                        </h4>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Name</span>
+                            <span>: {appointment.student_name}</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Date</span>
+                            <span>: {new Date(appointment.appointment_date).toLocaleDateString()}</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Time</span>
+                            <span>: {appointment.appointment_time}</span>
+                          </div>
+                          
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div className="container mt-20">
+          <div className="-mx-4 flex flex-wrap">
+            <div className="w-full px-4">
+              <div className="shadow-three mx-auto max-w-[700px] rounded bg-yellow_bright/50 px-6 py-10 dark:bg-blue/50 sm:p-[60px]">
+                <h3 className="mb-10 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
+                  Inbox
+                </h3>
+
+                {messages.length === 0 ? (
+                  <p className="text-center text-gray-600 dark:text-gray-300">
+                    No messages available.
+                  </p>
+                ) : (
+                  
+                  <ul className="space-y-4">
+                    {messages.map((message, index) => (
+                      <li
+                        key={index}
+                        className="p-4 border rounded-lg bg-white shadow-md dark:bg-black dark:border-dark mb-5"
+                      >
+                        <h4 className="font-bold text-lg text-black dark:text-white mb-5">
+                          Ticket #{message.ticket_id}
+                        </h4>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Name</span>
+                            <span>: {message.student_name}</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Email</span>
+                            <span>: {message.student_email}</span>
+                          </div>
+                          <div style={{ display: "flex" }} className="mt-5">
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Message</span>
+                          </div>
+                          <p>{message.student_message}</p>
+                          
+                        </div>
+                        <form action={async () => {
+                            "use server";
+                            await deleteMessageById(message.ticket_id)}}>
+                            <button
+                              type="submit"
+                              className="mt-4 px-4 py-2 text-white bg-red-500 rounded hover:bg-red-500/50"
+                            >
+                              Remove
+                            </button>
+                          </form> 
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div className="container mt-20">
+          <div className="-mx-4 flex flex-wrap">
+            <div className="w-full px-4">
+              <div className="shadow-three mx-auto max-w-[700px] rounded bg-yellow_bright/50 px-6 py-10 dark:bg-blue/50 sm:p-[60px]">
+                <h3 className="mb-10 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
+                  Subscribed Account
+                </h3>
+
+                {notifications.length === 0 ? (
+                  <p className="text-center text-gray-600 dark:text-gray-300">
+                    No account subscribed.
+                  </p>
+                ) : (
+                  
+                  <ul className="space-y-4">
+                    {notifications.map((notification, index) => (
+                      <li
+                        key={index}
+                        className="p-4 border rounded-lg bg-white shadow-md dark:bg-black dark:border-dark mb-5"
+                      >
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Name</span>
+                            <span>: {notification.student_name}</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <span style={{ width: "150px", fontWeight: "bold" }}>Email</span>
+                            <span>: {notification.student_email}</span>
+                          </div>
+                          
+                        </div>
+                        <form action={async () => {
+                            "use server";
+                            await deleteNotificationByEmail(notification.student_email)}}>
+                            <button
+                              type="submit"
+                              className="mt-4 px-4 py-2 text-white bg-red-500 rounded hover:bg-red-500/50"
+                            >
+                              Unsubscribe
+                            </button>
+                          </form> 
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        </>
         )}
 
       </section>
