@@ -10,7 +10,7 @@ export async function GET() {
   revalidatePath("/", "layout");
 
   // You can redirect back to the index, or to another page such as /login
-  const destination = `http://localhost:3000/`;
+  const destination = `https://ui-health.vercel.app/`;
 
   // Clear the session cookie explicitly. Generally this can be done by just
   // using Set-Cookie: <cookie-name>=; but Next.js gives us an API to do it.
