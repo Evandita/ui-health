@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 let userData = null;
 
-export const getTodayDate = () => {
+const getTodayDate = () => {
   const today = new Date();
   return today.toISOString().split('T')[0]; // Formats as YYYY-MM-DD
 };
