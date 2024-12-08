@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import pool from "@/utils/postgres";
 import { Metadata } from "next";
 import Breadcrumb from "@/components/Common/Breadcrumb";
+import Notification from "@/components/Notification";
 
 export const metadata: Metadata = {
   title: "Profile Page",
@@ -478,7 +479,7 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
               <div className="shadow-three mx-auto max-w-[700px] rounded bg-yellow_bright/50 px-6 py-10 dark:bg-blue/50 sm:p-[60px]">
-                <h3 className="mb-10 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
+                <h3 className=" mb-10 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
                   Pending Appointment
                 </h3>
 
@@ -488,11 +489,11 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
                   </p>
                 ) : (
                   
-                  <ul className="space-y-4">
+                  <ul className="space-y-5">
                     {appointments.map((appointment, index) => (
                       <li
                         key={index}
-                        className="p-4 border rounded-lg bg-white shadow-md dark:bg-black dark:border-dark mb-10"
+                        className="p-4 border rounded-lg bg-white shadow-md dark:bg-black dark:border-dark"
                       >
                         <h4 className="font-bold text-lg text-black dark:text-white mb-5">
                           Appointment #{appointment.appointment_id}
@@ -592,11 +593,11 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
                   </p>
                 ) : (
                   
-                  <ul className="space-y-4">
+                  <ul className="space-y-5">
                     {upcomingAppointments.map((appointment, index) => (
                       <li
                         key={index}
-                        className="p-4 border rounded-lg bg-white shadow-md dark:bg-black dark:border-dark mb-5"
+                        className="p-4 border rounded-lg bg-white shadow-md dark:bg-black dark:border-dark"
                       >
                         <h4 className="font-bold text-lg text-black dark:text-white mb-5">
                           Appointment #{appointment.appointment_id}
@@ -694,6 +695,9 @@ const ProfilePage = async ({ searchParams }: { searchParams?: { alert?: string; 
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
               <div className="shadow-three mx-auto max-w-[700px] rounded bg-yellow_bright/50 px-6 py-10 dark:bg-blue/50 sm:p-[60px]">
+                
+                <Notification />
+                
                 <h3 className="mb-10 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
                   Subscribed Account
                 </h3>
