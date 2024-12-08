@@ -90,13 +90,13 @@ const Appointment = async () => {
             <div className="mt-6 flex space-x-4 justify-center">
               <Link
                 href="/signin"
-                className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm text-white dark:text-dark bg-dark dark:bg-white px-8 py-3 text-base font-medium transition duration-300 hover:bg-dark/50 dark:hover:bg-white/50 md:block md:px-9 lg:px-6 xl:px-9"
+                className="ease-in-up shadow-btn hover:shadow-btn-hover  rounded-sm text-white dark:text-dark bg-dark dark:bg-white px-8 py-3 text-base font-medium transition duration-300 hover:bg-dark/50 dark:hover:bg-white/50 md:block md:px-9 lg:px-6 xl:px-9"
               >
                 Sign In
               </Link>
               <Link
                 href="/signup"
-                className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
+                className="ease-in-up shadow-btn hover:shadow-btn-hover  rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
               >
                 Sign Up
               </Link>

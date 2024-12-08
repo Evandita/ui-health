@@ -1,29 +1,44 @@
-import { redirect } from "next/navigation"
-import pool from "@/utils/postgres";
+"use client"
+import { useState } from "react";
 import NewsLatterBox from "./NewsLatterBox";
 import { FaWhatsapp, FaPhone } from "react-icons/fa"; // Importing icons from react-icons as placeholders
 
 const Contact = () => {
 
-  const handleSubmit = async (formData: FormData) => {
-    "use server";
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-    let student_name = formData.get("studentName");
-    let student_email = formData.get("studentEmail");
-    let student_message = formData.get("studentMessage");
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    const formData = new FormData(event.currentTarget);
+    const studentName = formData.get("studentName") as string;
+    const studentEmail = formData.get("studentEmail") as string;
+    const studentMessage = formData.get("studentMessage") as string;
 
     try {
-      const res = await pool.query(
-        'INSERT INTO ticket (student_name, student_email, student_message) VALUES ($1, $2, $3) RETURNING *',
-        [student_name, student_email, student_message]
-      )
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentName, studentEmail, studentMessage }),
+      });
 
-      console.log("Ticket sent:", res);
-    } catch (error) {
-      console.error("Error sending ticket:", error);
-      throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to subscribe");
+      }
+
+      const data = await response.json();
+      setSuccess("Succesfully sent ticket");
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
-    redirect("/contact-success");
   };
 
   return (
@@ -45,7 +60,7 @@ const Contact = () => {
                 Our support team will get back to you ASAP via email.
               </p>
               <form
-                action={handleSubmit}
+                onSubmit={handleSubmit}
               >
                 <div className="-mx-4 flex flex-wrap">
                   <div className="w-full px-4 md:w-1/2">
@@ -100,14 +115,25 @@ const Contact = () => {
                     </div>
                   </div>
                   <div className="w-full px-4">
-                    <button 
+                    <input 
                     type = "submit"
+                    value={loading ? "Submitting..." : "Submit Ticket"}
                     className="font-semibold rounded-sm bg-yellow_bright px-9 py-4 text-base font-medium text-black shadow-submit duration-300 hover:bg-yellow_bright/50 dark:shadow-submit-dark">
-                      Submit Ticket
-                    </button>
+                      
+                    </input>
                   </div>
                 </div>
               </form>
+              {error && (
+                <p className="mt-4 text-red-600 text-sm">
+                  {error}
+                </p>
+              )}
+              {success && (
+                <p className="mt-4 text-green-600 text-sm">
+                  {success}
+                </p>
+              )}
             </div>        
           </div>
           

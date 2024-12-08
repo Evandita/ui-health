@@ -1,26 +1,61 @@
-import { redirect } from "next/navigation"
-import emailjs from 'emailjs-com';
-import pool from "@/utils/postgres";
+"use client";
+
+import emailjs from '@emailjs/browser';
+import { useState } from "react";
 
 const NewsLatterBox = () => {
-  const handleSubmit = async (formData: FormData) => {
-    "use server";
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-    let student_name = formData.get("studentName");
-    let student_email = formData.get("studentEmail");
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    const formData = new FormData(event.currentTarget);
+    const studentName = formData.get("studentName") as string;
+    const studentEmail = formData.get("studentEmail") as string;
 
     try {
-      const res = await pool.query(
-        'INSERT INTO notification (student_name, student_email) VALUES ($1, $2) RETURNING *',
-        [student_name, student_email]
-      )
-      
-      console.log("Notification Subscribed:", res);
-    } catch (error) {
-      console.error("Error subscribing notification:", error);
-      throw error;
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentName, studentEmail }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to subscribe");
+      }
+
+      const data = await response.json();
+      setSuccess("Subscription successful!");
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
-    redirect("/notification-success");
+
+    const serviceID = "service_ewtewwz";
+    const templateID = "template_r1v0ez5";
+    const userID = "9sPMrWqWkn5H2dXmH";
+
+    try {
+      const emailParams = {
+        studentName: studentName,
+        studentEmail: studentEmail
+      };
+
+      const res = await emailjs.send(serviceID, templateID, emailParams, userID);
+
+      if (res.status === 200) {
+        console.log("Message sent successfully!");
+      }
+    } catch (error) {
+      console.log("Failed to send message. Please try again later.");
+    }
   };
 
   return (
@@ -31,9 +66,7 @@ const NewsLatterBox = () => {
       <p className="mb-8 text-base leading-relaxed text-body-color">
         Get up-to-date information about Student Discounts, Health Events, etc.
       </p>
-      <form
-        action={handleSubmit}
-      >
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="studentName"
@@ -50,10 +83,21 @@ const NewsLatterBox = () => {
         />
         <input
           type="submit"
-          value="Subscribe"
+          value={loading ? "Submitting..." : "Subscribe"}
           className="mb-5 font-semibold flex w-full cursor-pointer items-center justify-center rounded-sm bg-yellow_bright px-9 py-4 text-base font-medium text-black shadow-submit duration-300 hover:bg-yellow_bright/50 dark:shadow-submit-dark"
+          disabled={loading}
         />
       </form>
+      {error && (
+        <p className="mt-4 text-red-600 text-sm">
+          {error}
+        </p>
+      )}
+      {success && (
+        <p className="mt-4 text-green-600 text-sm">
+          {success}
+        </p>
+      )}
     </div>
   );
 };

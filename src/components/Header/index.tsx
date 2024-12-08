@@ -153,13 +153,13 @@ const Header = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                 <>
                   <a
                     href="/logout"
-                    className="hidden px-7 py-3 text-base font-medium text-dark hover:text-yellow_dark dark:text-white/70 dark:hover:text-yellow_bright md:block"
+                    className=" px-7 py-3 text-base font-medium text-dark hover:text-yellow_dark dark:text-white/70 dark:hover:text-yellow_bright md:block"
                   >
                     Logout
                   </a>
                   <Link
                       href="/profile"
-                      className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
+                      className="ease-in-up shadow-btn hover:shadow-btn-hover rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
                     >
                       Profile
                   </Link>
@@ -168,13 +168,13 @@ const Header = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
                   <>
                     <Link
                       href="/signin"
-                      className="hidden px-7 py-3 text-base font-medium text-dark hover:text-yellow_dark dark:text-white/70 dark:hover:text-yellow_bright md:block"
+                      className=" px-7 py-3 text-base font-medium text-dark hover:text-yellow_dark dark:text-white/70 dark:hover:text-yellow_bright md:block"
                     >
                       Sign In
                     </Link>
                     <Link
                       href="/signup"
-                      className="ease-in-up shadow-btn hover:shadow-btn-hover hidden rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
+                      className="ease-in-up shadow-btn hover:shadow-btn-hover rounded-sm bg-yellow_bright px-8 py-3 text-base font-medium text-dark transition duration-300 hover:bg-yellow_bright/50 md:block md:px-9 lg:px-6 xl:px-9"
                     >
                       Sign Up
                     </Link>
